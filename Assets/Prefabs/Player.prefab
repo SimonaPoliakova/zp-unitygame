@@ -227,6 +227,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 10.1
+  bubblePrefab: {fileID: 8835408627329938781, guid: 178c96a7a1b1ad141a2bdad38ed619af, type: 3}
+  bubbleSpeed: 8
   groundCheck: {fileID: 8956017709131422577}
   checkRadius: 1
   groundLayer:
