@@ -126,7 +126,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6089c8554a47ae4db338ca60479bfd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 3
+  trappedSprite: {fileID: 21300000, guid: 88df016cc5e3ee146b38ec5e91e69c50, type: 3}
+  floatSpeed: 2
+  bobbingAmount: 0.5
+  bobbingSpeed: 2
+  speed: 5
+  maxDistance: 10
 --- !u!58 &-1562226043955230191
 CircleCollider2D:
   m_ObjectHideFlags: 0
