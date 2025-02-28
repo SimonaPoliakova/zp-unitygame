@@ -17,6 +17,12 @@ public class Bubble : MonoBehaviour
     private bool hasStopped = false;
     private float bobbingOffset;
     private Vector3 startPosition;
+    private float moveDirection = 1;
+
+    public void SetDirection(float direction)
+    {
+        moveDirection = direction;
+    }
 
     private void Start()
     {
@@ -36,7 +42,7 @@ public class Bubble : MonoBehaviour
     {
         if (!hasCapturedEnemy && Vector3.Distance(startPosition, transform.position) < maxDistance)
         {
-            transform.position += transform.right * speed * Time.deltaTime;
+            transform.position += Vector3.right * moveDirection * speed * Time.deltaTime;
         }
         else if (!hasCapturedEnemy)
         {

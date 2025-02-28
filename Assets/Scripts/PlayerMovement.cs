@@ -4,8 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 10f;
-    public GameObject bubblePrefab;  // Bubble prefab reference
-    public float bubbleSpeed = 5f;   // Speed of the bubble
+    public GameObject bubblePrefab; // Bubble prefab reference
 
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -58,15 +57,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void ShootBubble()
     {
-        animator.SetTrigger("blow");
-
         GameObject bubble = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
-        Rigidbody2D bubbleRb = bubble.GetComponent<Rigidbody2D>();
+        Bubble bubbleScript = bubble.GetComponent<Bubble>();
 
-        if (bubbleRb != null)
+        if (bubbleScript != null)
         {
             float direction = spriteRenderer.flipX ? -1 : 1;
-            bubbleRb.velocity = new Vector2(bubbleSpeed * direction, 0);
+            bubbleScript.SetDirection(direction);
         }
     }
 }
