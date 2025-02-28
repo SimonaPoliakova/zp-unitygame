@@ -4,7 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 10f;
-    public GameObject bubblePrefab; // Bubble prefab reference
+    public GameObject bubblePrefab; 
 
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
             animator.ResetTrigger("jump");
         }
 
-        // Shoot bubble when pressing X
         if (Input.GetKeyDown(KeyCode.X))
         {
             ShootBubble();
