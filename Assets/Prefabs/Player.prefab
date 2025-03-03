@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5886320224985238716}
   - component: {fileID: 752782640034225209}
   - component: {fileID: 5654531722324893563}
-  - component: {fileID: 7057007961416203401}
   - component: {fileID: 7265469799254132783}
+  - component: {fileID: 8852120984964241130}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -147,7 +147,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1897892201752568935}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ed5d1cbac3eec6247a4833f44f72418d, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -183,36 +183,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3442752, y: 1.8328543}
   m_EdgeRadius: 0
---- !u!114 &7057007961416203401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1897892201752568935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: b250c56dde2742649bb18e67197def66, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &7265469799254132783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +203,19 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &8852120984964241130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897892201752568935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dcb291f22e7f2f44a30d3281e78739c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 2
 --- !u!1 &6023436830371316141
 GameObject:
   m_ObjectHideFlags: 0

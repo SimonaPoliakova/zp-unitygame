@@ -6,23 +6,25 @@ public class EnemyMovement : MonoBehaviour
     public float gravity = 20f;
     public float jumpForceMin = 5f;
     public float jumpForceMax = 12f;
+    public float detectionRange = 5f; 
 
     public Transform groundCheck;
     public Transform wallCheck;
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
+    private Transform player;
     private bool facingRight = true;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player")?.transform; 
     }
 
     private void Start()
     {
         rb.velocity = new Vector2(speed, rb.velocity.y);
-
         ScheduleNextJump();
     }
 
@@ -35,19 +37,44 @@ public class EnemyMovement : MonoBehaviour
             rb.velocity += new Vector2(0, -gravity * Time.fixedDeltaTime);
         }
 
-        rb.velocity = new Vector2(speed, rb.velocity.y);
-
-        if (IsTouchingWall())
+        if (player != null && Vector2.Distance(transform.position, player.position) < detectionRange)
         {
-            Flip();
+            ChasePlayer();
+        }
+        else
+        {
+            Patrol();
         }
     }
 
-    private void Flip()
-    {
-        speed = -speed;
-        facingRight = !facingRight;
+   private void ChasePlayer()
+{
+    if (player == null) return;
 
+    float direction = player.position.x > transform.position.x ? 1 : -1;
+
+    rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+
+    if ((direction > 0 && !facingRight) || (direction < 0 && facingRight))
+    {
+        Flip(direction);
+    }
+}
+
+
+    private void Patrol()
+    {
+        rb.velocity = new Vector2(facingRight ? speed : -speed, rb.velocity.y);
+
+        if (IsTouchingWall())
+        {
+            Flip(-1); 
+        }
+    }
+
+    private void Flip(float direction)
+    {
+        facingRight = direction > 0;
         transform.localScale = new Vector3(facingRight ? 0.7f : -0.7f, 0.7f, 1);
     }
 
@@ -58,7 +85,6 @@ public class EnemyMovement : MonoBehaviour
             float randomJump = Random.Range(jumpForceMin, jumpForceMax);
             rb.velocity = new Vector2(rb.velocity.x, randomJump);
         }
-
         ScheduleNextJump();
     }
 
