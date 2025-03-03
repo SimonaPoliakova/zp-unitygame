@@ -7,6 +7,12 @@ TagManager:
   - Ground
   - Enemy
   - PlatformSpawn
+  - Fruit
+  - Enemy_Trapped
+  - ScoreText
+  - HealthText
+  - GameOverPanel
+  - GameCanvas
   layers:
   - Default
   - TransparentFX

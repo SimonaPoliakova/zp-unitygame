@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 409751852778415740}
   m_Layer: 0
   m_Name: bubble_trapped
-  m_TagString: Untagged
+  m_TagString: Enemy_Trapped
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

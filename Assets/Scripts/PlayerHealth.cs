@@ -5,21 +5,17 @@ public class PlayerHealth : MonoBehaviour
 {
     private int health = 3;
     private TextMeshProUGUI healthText;
-    private Vector3 startPosition; 
+    private Vector3 startPosition;
 
     private void Start()
     {
-        startPosition = transform.position; 
+        startPosition = transform.position;
 
         GameObject healthObj = GameObject.Find("HealthText");
         if (healthObj != null)
         {
             healthText = healthObj.GetComponent<TextMeshProUGUI>();
             UpdateHealthUI();
-        }
-        else
-        {
-            Debug.LogError("HealthText UI not found");
         }
     }
 
@@ -37,32 +33,32 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
 
         if (health <= 0)
-        {
             Die();
-        }
         else
-        {
             Respawn();
-        }
     }
 
     private void UpdateHealthUI()
     {
         if (healthText != null)
-        {
             healthText.text = health.ToString();
-        }
     }
 
     private void Respawn()
     {
         transform.position = startPosition;
-        Debug.Log("Player respawned");
     }
 
     private void Die()
     {
-        Debug.Log("Player died");
-        GameManager.Instance.ShowGameOver(); 
+        if (GameManager.Instance == null)
+        {
+            GameManager.Instance = FindObjectOfType<GameManager>();
+
+            if (GameManager.Instance == null)
+                return;
+        }
+
+        GameManager.Instance.ShowGameOver();
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6838096911322314609}
   m_Layer: 0
   m_Name: Bonus2
-  m_TagString: Untagged
+  m_TagString: Fruit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -183,4 +183,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d1419ec63820a14a98d287966ac85a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreValue: 10
+  bonusValue: 1000
