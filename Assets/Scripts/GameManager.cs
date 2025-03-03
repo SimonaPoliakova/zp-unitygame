@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     private int score = 0;
     public TextMeshProUGUI scoreText;
+    public GameObject gameOverPanel; 
 
     private void Awake()
     {
@@ -33,9 +34,13 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = "" + score;
         }
-        else
+    }
+    public void ShowGameOver()
+    {
+        if (gameOverPanel != null)
         {
-            Debug.LogError("Score Text is not assigned in GameManager!");
+            gameOverPanel.SetActive(true);
+            Time.timeScale = 0f;
         }
     }
 }

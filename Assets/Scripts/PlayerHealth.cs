@@ -3,13 +3,15 @@ using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
-    private int health = 2; 
+    private int health = 3;
     private TextMeshProUGUI healthText;
+    private Vector3 startPosition; 
 
     private void Start()
     {
-        GameObject healthObj = GameObject.Find("HealthText");
+        startPosition = transform.position; 
 
+        GameObject healthObj = GameObject.Find("HealthText");
         if (healthObj != null)
         {
             healthText = healthObj.GetComponent<TextMeshProUGUI>();
@@ -38,19 +40,29 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            Respawn();
+        }
     }
 
     private void UpdateHealthUI()
     {
         if (healthText != null)
         {
-            healthText.text = "" + health;
+            healthText.text = health.ToString();
         }
+    }
+
+    private void Respawn()
+    {
+        transform.position = startPosition;
+        Debug.Log("Player respawned");
     }
 
     private void Die()
     {
-        Debug.Log("Player Died!");
-
+        Debug.Log("Player died");
+        GameManager.Instance.ShowGameOver(); 
     }
 }
