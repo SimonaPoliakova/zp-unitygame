@@ -13,6 +13,8 @@ TagManager:
   - HealthText
   - GameOverPanel
   - GameCanvas
+  - Wall
+  - LevelText
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,7 @@ TagManager:
   - Ground
   - Enemy
   - Player
-  - 
+  - Wall
   - 
   - 
   - 

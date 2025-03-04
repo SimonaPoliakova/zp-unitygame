@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bubble : MonoBehaviour
 {
-    public GameObject trappedBubblePrefab; 
+    public GameObject trappedBubblePrefab;
     public float floatSpeed = 2f;
     public float speed = 3f;
     public float maxDistance = 2f;
@@ -40,7 +40,7 @@ public class Bubble : MonoBehaviour
             hasCapturedEnemy = true;
             CaptureEnemy(collision.gameObject);
         }
-        else if (collision.CompareTag("Ground"))
+        else if (collision.CompareTag("Wall"))
         {
             Destroy(gameObject);
         }

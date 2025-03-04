@@ -215,6 +215,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!95 &4221826028323218815
 Animator:
   serializedVersion: 5
