@@ -15,6 +15,7 @@ TagManager:
   - GameCanvas
   - Wall
   - LevelText
+  - VictoryPanel
   layers:
   - Default
   - TransparentFX

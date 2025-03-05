@@ -188,13 +188,34 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(0);
+            FinishGame();
         }
     }
 
+
+
     private void RestartLevelCheck()
     {
+        isLoadingNextLevel = false;
         Invoke("CheckLevelCompletion", 1f);
         InvokeRepeating("CheckLevelCompletion", 1f, 1f);
     }
+
+
+    private void FinishGame()
+    {
+        score = 0;
+        isLoadingNextLevel = false;
+
+        UpdateScoreUI();
+
+        CancelInvoke("CheckLevelCompletion");
+        CancelInvoke("RestartLevelCheck");
+
+        Destroy(gameObject);
+
+        SceneManager.LoadScene(0);
+    }
+
+
 }
