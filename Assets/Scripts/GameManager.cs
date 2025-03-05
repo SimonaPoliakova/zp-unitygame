@@ -51,7 +51,13 @@ public class GameManager : MonoBehaviour
     {
         AssignUIElements();
         UpdateLevelUI();
+
+        if (scene.buildIndex == 0 && gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
     }
+
 
     private void AssignUIElements()
     {
@@ -148,14 +154,9 @@ public class GameManager : MonoBehaviour
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(false);
-
-        if (gameCanvas != null)
-            gameCanvas.SetActive(false);
-
         SceneManager.LoadScene(0);
     }
+
 
     private void CheckLevelCompletion()
     {
