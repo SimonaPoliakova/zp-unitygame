@@ -38,11 +38,23 @@ public class PlayerHealth : MonoBehaviour
             Respawn();
     }
 
-    private void UpdateHealthUI()
+   private void UpdateHealthUI()
+{
+    if (healthText == null)
     {
-        if (healthText != null)
-            healthText.text = health.ToString();
+        GameObject healthObj = GameObject.Find("HealthText");
+        if (healthObj != null)
+        {
+            healthText = healthObj.GetComponent<TextMeshProUGUI>();
+        }
     }
+
+    if (healthText != null)
+    {
+        healthText.text = health.ToString();
+    }
+}
+
 
     private void Respawn()
     {
@@ -61,4 +73,11 @@ public class PlayerHealth : MonoBehaviour
 
         GameManager.Instance.ShowGameOver();
     }
+public void ResetHealth()
+{
+    health = 3;
+    UpdateHealthUI();
+}
+
+
 }

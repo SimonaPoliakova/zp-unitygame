@@ -56,6 +56,13 @@ public class GameManager : MonoBehaviour
         {
             gameOverPanel.SetActive(false);
         }
+
+        // Reset Player Health
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.ResetHealth();
+        }
     }
 
 
@@ -121,40 +128,58 @@ public class GameManager : MonoBehaviour
             scoreText.text = score.ToString();
     }
 
-    public void ShowGameOver()
+   public void ShowGameOver()
+{
+    if (gameOverPanel == null)
     {
+        gameOverPanel = GameObject.FindWithTag("GameOverPanel");
         if (gameOverPanel == null)
-        {
-            gameOverPanel = GameObject.FindWithTag("GameOverPanel");
-            if (gameOverPanel == null)
-                return;
-        }
-
-        score = 0;
-        UpdateScoreUI();
-
-        gameOverPanel.SetActive(true);
-        Time.timeScale = 0f;
-
-        foreach (UnityEngine.UI.Button button in gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Button>(true))
-        {
-            button.interactable = true;
-        }
+            return;
     }
+
+    PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+    if (playerHealth != null)
+    {
+        playerHealth.ResetHealth();
+    }
+
+    score = 0;
+    UpdateScoreUI();
+
+    gameOverPanel.SetActive(true);
+    Time.timeScale = 0f;
+
+    foreach (UnityEngine.UI.Button button in gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Button>(true))
+    {
+        button.interactable = true;
+    }
+}
+
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(false);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
+
+        SceneManager.LoadScene(2);
     }
-
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
+        SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
         SceneManager.LoadScene(0);
+    }
+
+    private void OnSceneLoadedAfterRestart(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneLoadedAfterRestart;
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
+        score = 0;
+        UpdateScoreUI();
     }
 
 
@@ -191,7 +216,6 @@ public class GameManager : MonoBehaviour
             FinishGame();
         }
     }
-
 
 
     private void RestartLevelCheck()
