@@ -5,15 +5,17 @@ using System.Collections;
 
 public class StartTextEffect : MonoBehaviour
 {
-    public TextMeshProUGUI startText; 
-    public float typeSpeed = 0.05f; 
+    public TextMeshProUGUI startText;
+    public GameObject pressAnyKeyText; // Reference to the "Press Any Key" text
+    public float typeSpeed = 0.05f;
 
-    private string fullText = "NOW IT IS THE BEGINNING OF A FANTASTIC STORY!!\nLET'S MAKE A JOURNEY TO THE CAVE OF MONSTERS!\nGOOD LUCK!\n\n(Press Any Key to Start)";
+    private string fullText = "NOW IT IS THE BEGINNING OF A FANTASTIC STORY!!\nLET'S MAKE A JOURNEY TO THE CAVE OF MONSTERS!\nGOOD LUCK!\n\n";
     private bool isTyping = false;
-    
+
     private void Start()
     {
         startText.text = "";
+        pressAnyKeyText.SetActive(false); // Hide the start text initially
         StartCoroutine(TypeText());
     }
 
@@ -28,6 +30,7 @@ public class StartTextEffect : MonoBehaviour
         }
 
         isTyping = false;
+        pressAnyKeyText.SetActive(true); // Show the text after typing ends
     }
 
     private void Update()

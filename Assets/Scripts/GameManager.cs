@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelText;
     public GameObject gameOverPanel;
     public GameObject gameCanvas;
+    public GameObject victoryPanel;
 
     private void Awake()
     {
@@ -52,19 +53,25 @@ public class GameManager : MonoBehaviour
         AssignUIElements();
         UpdateLevelUI();
 
-        if (scene.buildIndex == 0 && gameOverPanel != null)
+        if (scene.buildIndex == 0)
         {
-            gameOverPanel.SetActive(false);
+            if (gameOverPanel != null)
+            {
+                gameOverPanel.SetActive(false);
+            }
+
+            if (victoryPanel != null)
+            {
+                victoryPanel.SetActive(false);
+            }
         }
 
-        // Reset Player Health
         PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
         if (playerHealth != null)
         {
             playerHealth.ResetHealth();
         }
     }
-
 
     private void AssignUIElements()
     {
@@ -89,19 +96,8 @@ public class GameManager : MonoBehaviour
         if (gameOverPanel == null)
             gameOverPanel = GameObject.FindWithTag("GameOverPanel");
 
-        EnsureSingleEventSystem();
-    }
-
-    private void EnsureSingleEventSystem()
-    {
-        EventSystem[] eventSystems = FindObjectsOfType<EventSystem>();
-        if (eventSystems.Length > 1)
-        {
-            for (int i = 1; i < eventSystems.Length; i++)
-            {
-                Destroy(eventSystems[i].gameObject);
-            }
-        }
+        if (victoryPanel == null)
+            victoryPanel = GameObject.FindWithTag("VictoryPanel");
     }
 
     private void UpdateLevelUI()
@@ -128,42 +124,40 @@ public class GameManager : MonoBehaviour
             scoreText.text = score.ToString();
     }
 
-   public void ShowGameOver()
-{
-    if (gameOverPanel == null)
+    public void ShowGameOver()
     {
-        gameOverPanel = GameObject.FindWithTag("GameOverPanel");
         if (gameOverPanel == null)
-            return;
+        {
+            gameOverPanel = GameObject.FindWithTag("GameOverPanel");
+            if (gameOverPanel == null)
+                return;
+        }
+
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.ResetHealth();
+        }
+
+        score = 0;
+        UpdateScoreUI();
+
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
+
+        foreach (UnityEngine.UI.Button button in gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Button>(true))
+        {
+            button.interactable = true;
+        }
     }
-
-    PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-    if (playerHealth != null)
-    {
-        playerHealth.ResetHealth();
-    }
-
-    score = 0;
-    UpdateScoreUI();
-
-    gameOverPanel.SetActive(true);
-    Time.timeScale = 0f;
-
-    foreach (UnityEngine.UI.Button button in gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Button>(true))
-    {
-        button.interactable = true;
-    }
-}
-
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
-
         SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
-
         SceneManager.LoadScene(2);
     }
+
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
@@ -174,14 +168,21 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoadedAfterRestart(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoadedAfterRestart;
+
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
         }
+
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(false);
+        }
+
         score = 0;
         UpdateScoreUI();
+        InvokeRepeating("CheckLevelCompletion", 1f, 1f);
     }
-
 
     private void CheckLevelCompletion()
     {
@@ -196,7 +197,7 @@ public class GameManager : MonoBehaviour
         {
             isLoadingNextLevel = true;
             CancelInvoke("CheckLevelCompletion");
-            Invoke("LoadNextLevel", 3f);
+            Invoke("LoadNextLevel", 1f);
         }
     }
 
@@ -217,7 +218,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     private void RestartLevelCheck()
     {
         isLoadingNextLevel = false;
@@ -225,21 +225,23 @@ public class GameManager : MonoBehaviour
         InvokeRepeating("CheckLevelCompletion", 1f, 1f);
     }
 
-
     private void FinishGame()
     {
         score = 0;
         isLoadingNextLevel = false;
-
         UpdateScoreUI();
 
         CancelInvoke("CheckLevelCompletion");
         CancelInvoke("RestartLevelCheck");
 
-        Destroy(gameObject);
-
-        SceneManager.LoadScene(0);
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(true);
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Debug.LogError("VictoryPanel is NOT assigned in the Inspector!");
+        }
     }
-
-
 }
