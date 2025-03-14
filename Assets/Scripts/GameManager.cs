@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.EventSystems;
 
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject gameCanvas;
     public GameObject victoryPanel;
+    private AudioSource confirmSound;
+    private AudioSource gameOverSound;
+    private AudioSource gameMusic;
 
     private void Awake()
     {
@@ -29,6 +33,9 @@ public class GameManager : MonoBehaviour
         }
 
         gameCanvas = transform.Find("GameCanvas")?.gameObject;
+        confirmSound = transform.Find("ConfirmSound")?.GetComponent<AudioSource>();
+        gameOverSound = transform.Find("GameOverSound")?.GetComponent<AudioSource>();
+        gameMusic = transform.Find("GameMusic")?.GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -48,30 +55,35 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+   private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    AssignUIElements();
+    UpdateLevelUI();
+
+    if (scene.buildIndex == 0 || scene.buildIndex == 1) 
     {
-        AssignUIElements();
-        UpdateLevelUI();
-
-        if (scene.buildIndex == 0)
+        if (gameMusic != null)
         {
-            if (gameOverPanel != null)
-            {
-                gameOverPanel.SetActive(false);
-            }
-
-            if (victoryPanel != null)
-            {
-                victoryPanel.SetActive(false);
-            }
-        }
-
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.ResetHealth();
+            gameMusic.Stop();
         }
     }
+    else
+    {
+        if (gameMusic != null && !gameMusic.isPlaying)
+        {
+            gameMusic.Play(); 
+        }
+    }
+
+    if (scene.buildIndex == 0)
+    {
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
+    }
+
+    PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+    if (playerHealth != null) playerHealth.ResetHealth();
+}
 
     private void AssignUIElements()
     {
@@ -126,6 +138,12 @@ public class GameManager : MonoBehaviour
 
     public void ShowGameOver()
     {
+        gameMusic.Stop();
+        if (gameOverSound != null)
+        {
+
+            gameOverSound.Play();
+        }
         if (gameOverPanel == null)
         {
             gameOverPanel = GameObject.FindWithTag("GameOverPanel");
@@ -153,6 +171,11 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        if (confirmSound != null)
+        {
+
+            confirmSound.Play();
+        }
         Time.timeScale = 1f;
         SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
         SceneManager.LoadScene(2);
@@ -160,6 +183,11 @@ public class GameManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
+        if (confirmSound != null)
+        {
+
+            confirmSound.Play();
+        }
         Time.timeScale = 1f;
         SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
         SceneManager.LoadScene(0);
@@ -244,4 +272,5 @@ public class GameManager : MonoBehaviour
             Debug.LogError("VictoryPanel is NOT assigned in the Inspector!");
         }
     }
+
 }

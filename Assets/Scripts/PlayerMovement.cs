@@ -4,12 +4,14 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 10f;
-    public GameObject bubblePrefab; 
+    public GameObject bubblePrefab;
 
     private Rigidbody2D rb;
     private bool isGrounded;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private AudioSource jumpSound;
+    private AudioSource bubbleSound;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float checkRadius = 0.2f;
@@ -20,7 +22,10 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        jumpSound = transform.Find("JumpSound")?.GetComponent<AudioSource>();
+        bubbleSound = transform.Find("BubbleSound")?.GetComponent<AudioSource>();
     }
+
 
     private void Update()
     {
@@ -39,6 +44,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
         {
+            if (jumpSound != null)
+            {
+
+                jumpSound.Play();
+            }
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             animator.SetTrigger("jump");
         }
@@ -56,6 +66,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void ShootBubble()
     {
+        if (bubbleSound != null)
+        {
+
+            bubbleSound.Play();
+        }
         GameObject bubble = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
         Bubble bubbleScript = bubble.GetComponent<Bubble>();
 
