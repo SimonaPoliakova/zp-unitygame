@@ -4,7 +4,7 @@ public class Bubble : MonoBehaviour
 {
     public GameObject trappedBubblePrefab;
     public float floatSpeed = 2f;
-    public float speed = 3f;
+    public float speed = 7f;
     public float maxDistance = 2f;
 
     private bool hasCapturedEnemy = false;

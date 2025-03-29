@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-    public float jumpForce = 10f;
+    public float jumpForce = 5f;
     public GameObject bubblePrefab;
 
     private Rigidbody2D rb;
@@ -65,19 +65,21 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void ShootBubble()
+{
+    if (bubbleSound != null)
     {
-        if (bubbleSound != null)
-        {
-
-            bubbleSound.Play();
-        }
-        GameObject bubble = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
-        Bubble bubbleScript = bubble.GetComponent<Bubble>();
-
-        if (bubbleScript != null)
-        {
-            float direction = spriteRenderer.flipX ? -1 : 1;
-            bubbleScript.SetDirection(direction);
-        }
+        bubbleSound.Play();
     }
+
+    float direction = spriteRenderer.flipX ? -1 : 1;
+    Vector3 spawnOffset = new Vector3(direction * 0.4f, -0.3f, 0); 
+    GameObject bubble = Instantiate(bubblePrefab, transform.position + spawnOffset, Quaternion.identity);
+
+    Bubble bubbleScript = bubble.GetComponent<Bubble>();
+    if (bubbleScript != null)
+    {
+        bubbleScript.SetDirection(direction);
+    }
+}
+
 }

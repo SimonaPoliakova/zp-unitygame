@@ -9,7 +9,7 @@ public class StartTextEffect : MonoBehaviour
     public GameObject pressAnyKeyText;
     public float typeSpeed = 0.05f;
 
-    private string fullText = "NOW IT IS THE BEGINNING OF A FANTASTIC STORY!!\nLET'S MAKE A JOURNEY TO THE CAVE OF MONSTERS!\nGOOD LUCK!\n\n";
+    private string fullText = "NOW IT IS THE BEGINNING OF A FANTASTIC STORY!\nLET'S MAKE A JOURNEY TO THE CAVE OF MONSTERS!\nGOOD LUCK!\n\n";
     private bool isTyping = false;
     private AudioSource typingSound;
     private bool hasPlayedSound = false;

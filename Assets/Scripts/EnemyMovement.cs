@@ -3,10 +3,12 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     public float speed = 2f;
+    public float angrySpeed = 4f; 
     public float gravity = 20f;
     public float jumpForceMin = 5f;
     public float jumpForceMax = 12f;
     public float detectionRange = 5f;
+    public float angryTime = 10f;  
 
     public Transform groundCheck;
     public Transform wallCheck;
@@ -16,6 +18,8 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Transform player;
     private bool facingRight = true;
+    private bool isAngry = false;
+    private float timer;
 
     private void Awake()
     {
@@ -27,6 +31,7 @@ public class EnemyMovement : MonoBehaviour
     {
         rb.velocity = new Vector2(speed, rb.velocity.y);
         ScheduleNextJump();
+        timer = angryTime; 
     }
 
     private void FixedUpdate()
@@ -36,6 +41,15 @@ public class EnemyMovement : MonoBehaviour
         if (!IsGrounded())
         {
             rb.velocity += new Vector2(0, -gravity * Time.fixedDeltaTime);
+        }
+
+        if (!isAngry)
+        {
+            timer -= Time.fixedDeltaTime;
+            if (timer <= 0)
+            {
+                BecomeAngry();
+            }
         }
 
         if (player != null && Vector2.Distance(transform.position, player.position) < detectionRange)
@@ -53,7 +67,7 @@ public class EnemyMovement : MonoBehaviour
         if (player == null) return;
 
         float direction = player.position.x > transform.position.x ? 1 : -1;
-        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+        rb.velocity = new Vector2(direction * (isAngry ? angrySpeed : speed), rb.velocity.y);
 
         if ((direction > 0 && !facingRight) || (direction < 0 && facingRight))
         {
@@ -63,7 +77,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Patrol()
     {
-        rb.velocity = new Vector2(facingRight ? speed : -speed, rb.velocity.y);
+        rb.velocity = new Vector2(facingRight ? (isAngry ? angrySpeed : speed) : -(isAngry ? angrySpeed : speed), rb.velocity.y);
 
         if (IsTouchingWall())  
         {
@@ -75,7 +89,7 @@ public class EnemyMovement : MonoBehaviour
     {
         facingRight = !facingRight;
         transform.localScale = new Vector3(facingRight ? 0.7f : -0.7f, 0.7f, 1);
-        rb.velocity = new Vector2(facingRight ? speed : -speed, rb.velocity.y);
+        rb.velocity = new Vector2(facingRight ? (isAngry ? angrySpeed : speed) : -(isAngry ? angrySpeed : speed), rb.velocity.y);
     }
 
     private void RandomJump()
@@ -102,5 +116,11 @@ public class EnemyMovement : MonoBehaviour
     private bool IsTouchingWall()
     {
         return Physics2D.OverlapCircle(wallCheck.position, 0.1f, wallLayer);  
+    }
+
+    private void BecomeAngry()
+    {
+        isAngry = true;
+        GetComponent<SpriteRenderer>().color = Color.red; 
     }
 }

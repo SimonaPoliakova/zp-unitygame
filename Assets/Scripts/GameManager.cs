@@ -1,11 +1,12 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.EventSystems;
 
-
 public class GameManager : MonoBehaviour
 {
+
     public static GameManager Instance;
     private int score = 0;
     private bool isLoadingNextLevel = false;
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
         AssignUIElements();
         UpdateLevelUI();
         InvokeRepeating("CheckLevelCompletion", 1f, 1f);
@@ -55,35 +58,29 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-   private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    AssignUIElements();
-    UpdateLevelUI();
-
-    if (scene.buildIndex == 0 || scene.buildIndex == 1) 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (gameMusic != null)
+        AssignUIElements();
+        UpdateLevelUI();
+
+        if (scene.buildIndex == 0 || scene.buildIndex == 1)
         {
-            gameMusic.Stop();
+            gameMusic?.Stop();
         }
-    }
-    else
-    {
-        if (gameMusic != null && !gameMusic.isPlaying)
+        else if (gameMusic != null && !gameMusic.isPlaying)
         {
-            gameMusic.Play(); 
+            gameMusic.Play();
         }
-    }
 
-    if (scene.buildIndex == 0)
-    {
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
-        if (victoryPanel != null) victoryPanel.SetActive(false);
-    }
+        if (scene.buildIndex == 0)
+        {
+            gameOverPanel?.SetActive(false);
+            victoryPanel?.SetActive(false);
+        }
 
-    PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-    if (playerHealth != null) playerHealth.ResetHealth();
-}
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        playerHealth?.ResetHealth();
+    }
 
     private void AssignUIElements()
     {
@@ -91,25 +88,15 @@ public class GameManager : MonoBehaviour
 
         if (sceneIndex == 0 || sceneIndex == 1)
         {
-            if (gameCanvas != null)
-                gameCanvas.SetActive(false);
+            gameCanvas?.SetActive(false);
             return;
         }
 
-        if (gameCanvas != null)
-            gameCanvas.SetActive(true);
-
-        if (scoreText == null)
-            scoreText = GameObject.FindWithTag("ScoreText")?.GetComponent<TextMeshProUGUI>();
-
-        if (levelText == null)
-            levelText = GameObject.FindWithTag("LevelText")?.GetComponent<TextMeshProUGUI>();
-
-        if (gameOverPanel == null)
-            gameOverPanel = GameObject.FindWithTag("GameOverPanel");
-
-        if (victoryPanel == null)
-            victoryPanel = GameObject.FindWithTag("VictoryPanel");
+        gameCanvas?.SetActive(true);
+        scoreText ??= GameObject.FindWithTag("ScoreText")?.GetComponent<TextMeshProUGUI>();
+        levelText ??= GameObject.FindWithTag("LevelText")?.GetComponent<TextMeshProUGUI>();
+        gameOverPanel ??= GameObject.FindWithTag("GameOverPanel");
+        victoryPanel ??= GameObject.FindWithTag("VictoryPanel");
     }
 
     private void UpdateLevelUI()
@@ -138,25 +125,13 @@ public class GameManager : MonoBehaviour
 
     public void ShowGameOver()
     {
-        gameMusic.Stop();
-        if (gameOverSound != null)
-        {
+        gameMusic?.Stop();
+        gameOverSound?.Play();
 
-            gameOverSound.Play();
-        }
-        if (gameOverPanel == null)
-        {
-            gameOverPanel = GameObject.FindWithTag("GameOverPanel");
-            if (gameOverPanel == null)
-                return;
-        }
+        gameOverPanel ??= GameObject.FindWithTag("GameOverPanel");
+        if (gameOverPanel == null) return;
 
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.ResetHealth();
-        }
-
+        FindObjectOfType<PlayerHealth>()?.ResetHealth();
         score = 0;
         UpdateScoreUI();
 
@@ -171,45 +146,23 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        if (confirmSound != null)
-        {
-
-            confirmSound.Play();
-        }
+        confirmSound?.Play();
         Time.timeScale = 1f;
-        SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
-        SceneManager.LoadScene(2);
+        StartCoroutine(LoadSceneAsync(2));
+        StartCoroutine(DelayedAction());
+
+        IEnumerator DelayedAction()
+        {
+            yield return new WaitForSeconds(0.2f);
+            gameOverPanel.SetActive(false);
+        }
     }
 
     public void LoadMainMenu()
     {
-        if (confirmSound != null)
-        {
-
-            confirmSound.Play();
-        }
+        confirmSound?.Play();
         Time.timeScale = 1f;
-        SceneManager.sceneLoaded += OnSceneLoadedAfterRestart;
-        SceneManager.LoadScene(0);
-    }
-
-    private void OnSceneLoadedAfterRestart(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= OnSceneLoadedAfterRestart;
-
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(false);
-        }
-
-        if (victoryPanel != null)
-        {
-            victoryPanel.SetActive(false);
-        }
-
-        score = 0;
-        UpdateScoreUI();
-        InvokeRepeating("CheckLevelCompletion", 1f, 1f);
+        StartCoroutine(LoadSceneAsync(0));
     }
 
     private void CheckLevelCompletion()
@@ -225,20 +178,18 @@ public class GameManager : MonoBehaviour
         {
             isLoadingNextLevel = true;
             CancelInvoke("CheckLevelCompletion");
-            Invoke("LoadNextLevel", 1f);
+            StartCoroutine(LoadNextLevel());
         }
     }
 
-    private void LoadNextLevel()
+    private IEnumerator LoadNextLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(nextSceneIndex);
-            isLoadingNextLevel = false;
-            Invoke("RestartLevelCheck", 1f);
+            yield return LoadSceneAsync(nextSceneIndex);
         }
         else
         {
@@ -246,10 +197,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void RestartLevelCheck()
+    private IEnumerator LoadSceneAsync(int sceneIndex)
     {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
+        operation.allowSceneActivation = false;
+
+        while (!operation.isDone)
+        {
+            if (operation.progress >= 0.9f)
+            {
+                operation.allowSceneActivation = true;
+            }
+            yield return null;
+        }
+
         isLoadingNextLevel = false;
-        Invoke("CheckLevelCompletion", 1f);
         InvokeRepeating("CheckLevelCompletion", 1f, 1f);
     }
 
@@ -260,7 +222,6 @@ public class GameManager : MonoBehaviour
         UpdateScoreUI();
 
         CancelInvoke("CheckLevelCompletion");
-        CancelInvoke("RestartLevelCheck");
 
         if (victoryPanel != null)
         {
@@ -272,5 +233,4 @@ public class GameManager : MonoBehaviour
             Debug.LogError("VictoryPanel is NOT assigned in the Inspector!");
         }
     }
-
 }
