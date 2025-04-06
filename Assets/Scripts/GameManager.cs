@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
         }
 
         isLoadingNextLevel = false;
-        InvokeRepeating("CheckLevelCompletion", 1f, 1f);
+        InvokeRepeating("CheckLevelCompletion", 1.6f, 1.6f); 
     }
 
     private void FinishGame()
@@ -225,6 +225,7 @@ public class GameManager : MonoBehaviour
 
         if (victoryPanel != null)
         {
+            gameMusic?.Stop();
             victoryPanel.SetActive(true);
             Time.timeScale = 0f;
         }
